@@ -1,0 +1,12 @@
+{% extends 'accounts/layout.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 offset-sm-3">
+                <!-- with 부터 나오는 내용은 모두 _form.html에서 default에 따른 추가 오버라이드 설정이다. -->
+                {% include '_form.html' with submit_label="회원가입" %}      
+            </div>
+        </div>
+    </div>    
+{% endblock content %}

@@ -18,16 +18,30 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required
+
+
+# 이런 기능을 만들어 주기 위해서
+# path('')뒤의 내용을 login_required로 장식을 해준다.
+# @login_required
+# def root(request):
+#     return render(request, 'root.html')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='root.html'), name='root')
+    # 만약 이 경로가 re_path('')로 정의가 되었다면, re_path는 정규표현식이 필요한 경로로써 여기서는
+    # 정의된 정규표현이 없는상태의 공백이기 때문에 "어떤 경로를 입력하든" 이 페이지로 오게된다.
+    path('', login_required(TemplateView.as_view(
+        template_name='root.html')), name='root'),
+    path('accounts/', include('accounts.urls'))
 ]
 
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns += [
-        path('__debug__', include(debug_toolbar.urls))
+        path('__debug__/', include(debug_toolbar.urls))
     ]
+
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)

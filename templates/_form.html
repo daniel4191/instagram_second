@@ -1,0 +1,14 @@
+{% load bootstrap4 %}
+
+<!-- 기본 form 노출 start -->
+<form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">
+            <!-- |필터 이하 내용은 모두 signup_form.html에서 with와 함께 오버라이드 처리할 것이다. -->
+            {{ submit_label|default:"Submit" }}
+        </button>
+    {% endbuttons %}
+</form> 
+<!-- 기본 form 노출 end -->
