@@ -1,3 +1,2 @@
+# common.txt의 내용을 읽어오겠다. 라는 의미
 -r common.txt
-
-django-debug-toolbar

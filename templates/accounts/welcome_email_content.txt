@@ -1,3 +1,0 @@
-{{ user.first_name }} {{ user.last_name }}님 가입을 환영 합니다.
-
-- Instagram 운영자 드림
