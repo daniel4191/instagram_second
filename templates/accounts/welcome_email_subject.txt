@@ -1,2 +1,1 @@
-{% csrf_token %}
 {{ user.first_name }} {{ user.last_name }}님의 Instagram 가입을 환영 합니다.
