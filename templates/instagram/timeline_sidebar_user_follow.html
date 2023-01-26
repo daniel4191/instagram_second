@@ -1,0 +1,12 @@
+<div class="d-flex mb-1">
+    <div class="mr-3">
+        <!-- friend_user는 include 사용중인 timeline_sidebar.html에서 with로 기존 user 값의 이름을 전환해준거다. -->
+        <img src="{{ friend_user.avatar_url }}" style="width: 32px; height: 32px;" class="rounded-circle">
+    </div>
+    <div>
+        {{ friend_user.username }}
+    </div>
+    <div class="ml-auto">
+        <a href="#">Follow</a>
+    </div>
+</div>
