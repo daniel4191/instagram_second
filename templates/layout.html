@@ -74,14 +74,15 @@
                             </svg>
                         </a>
                         <a class="p-2 text-dark" href="{% url 'accounts:profile_edit' %}">
-                            {% if user.avatar %}
-                                <img src="{{ user.avatar.url }}" style="width: 24px;">
-                            {% else %}
+                            <img src="{{ user.avatar_url }}" style="width: 24px; height: 24px;">
+                            {% comment %} {% if user.avatar %} {% endcomment %}
+                                {% comment %} <img src="{{ user.avatar.url }}" style="width: 24px;"> {% endcomment %}
+                            {% comment %} {% else %} {% endcomment %}
                                 <!-- 에러가 계속 발생됨 공식문서 읽어보기 -->
                                 <!-- https://docs.djangoproject.com/ko/4.1/intro/tutorial03/ -->
                                 <!-- 키워드: django url value 전달 안됨 -->
-                                <img src="{% url 'pydenticon_image' data=user.username %}" style="width: 24px; height: 24px;">
-                            {% endif %}                            
+                                {% comment %} <img src="{% url 'pydenticon_image' data=user.username %}" style="width: 24px; height: 24px;"> {% endcomment %}
+                            {% comment %} {% endif %}                             {% endcomment %}
                         </a>
                     </nav>
                 </div>

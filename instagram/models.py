@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
 
 import re
 
@@ -15,6 +16,10 @@ class Post(models.Model):
     def __str__(self):
         return self.caption
 
+    @property
+    def author_name(self):
+        return f'{self.author.first_name} {self.author.last_name}'
+
     def extract_tag_list(self):
         # #다음을 ()로 묶어 줘야, 결과값으로 #를 붙여주지 않고 리턴할 수 있다.
         tag_name_list = re.findall(r'#([a-zA-Z\dㄱ-힣]+)', self.caption)
@@ -22,9 +27,14 @@ class Post(models.Model):
         for tag_name in tag_name_list:
             tag, _ = Tag.objects.get_or_create(name = tag_name)
             tag_list.append(tag)
+        return tag_list
 
-    # def get_absolute_url(self):
-    #     return reverse('()', kwargs={'pk': self.pk})
+    def get_absolute_url(self):
+        # 방법1
+        # return reverse('()', kwargs={'pk': self.pk})
+
+        # 방법2
+        return reverse('instagram:post_detail', args=[self.pk])
     
 
 class Tag(models.Model):

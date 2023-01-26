@@ -8,6 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.validators import RegexValidator
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
+from django.shortcuts import resolve_url
 
 # Create your models here.
 class User(AbstractUser):
@@ -32,6 +33,17 @@ class User(AbstractUser):
                                       processors=[ResizeToFill(100, 50)],
                                       format='JPEG',
                                       options={'quality': 60})
+        
+    @property
+    def name(self):
+        return f'{self.first_name} {self.last_name}'
+
+    @property
+    def avatar_url(self):
+        if self.avatar:
+            return self.avatar.url
+        else:
+            return resolve_url('pydenticon_image', self.username)
 
     def send_welcome_email(self):
         subject = render_to_string('accounts/welcome_email_subject.txt', {
