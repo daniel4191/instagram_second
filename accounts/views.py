@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.views import (
     LoginView, logout_then_login, 
     PasswordChangeView as AuthPasswordChangeView
@@ -10,7 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 
 from .forms import SignupForm, ProfileForm, PasswordChangeForm
-
+from .models import User
 
 # Create your views here.
 login = LoginView.as_view(
@@ -83,3 +83,27 @@ def profile_random(request):
     return render(request, 'layout.html', {
         'user': user
     })
+
+
+@login_required
+def user_follow(request, username):    
+    follow_user = get_object_or_404(User, username = username, is_active=True)
+    
+    # request.user => follow_user를 팔로우 하려고 합니다.    
+    request.user.following_set.add(follow_user)
+    follow_user.follower_set.add(request.user)
+
+    messages.success(request, f'{follow_user}님을 팔로우 했습니다.')
+    # 인자로 받게된 root는 가장 메인페이지로써, 프로젝트 단위 urls.py에 정의됨
+    redirect_url = request.META.get('HTTP_REFERER', 'root')
+    return redirect(redirect_url)
+
+
+@login_required
+def user_unfollow(request, username):
+    unfollow_user = get_object_or_404(User, username = username, is_active=True)
+    request.user.following_set.remove(unfollow_user)
+    unfollow_user.follower_set.remove(request.user)
+    messages.success(request, f'{unfollow_user}님을 언팔 했습니다.')
+    redirect_url = request.META.get('HTTP_REFERER', 'root')
+    return redirect(redirect_url)

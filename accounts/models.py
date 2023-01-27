@@ -16,6 +16,13 @@ class User(AbstractUser):
         MALE = 'M', '남성'
         FEMALE = 'F', '여성'
 
+    # 기본적으로 ManyToManyField는 처음에 "대상"을 정해줘야한다.
+    # 그런데 이 User 모델 하에서는 자기 자신이 된다는 의미로 self로 해준다고 하는데, 이건 잘 모르겠다.
+    
+    # 뒤 이어 나온 blank를 True로 해주는 이유는 "팔로워나 팔로잉이 없을 수 도 있으니까"가 이유다.
+    follower_set = models.ManyToManyField("self", blank=True)    
+    following_set = models.ManyToManyField("self", blank=True)
+    
     website_url = models.URLField(blank = True)
     bio = models.TextField(blank = True)
     # 이게 max_length가 13인 이유는 휴대폰번호 기본 11자리(3+4+4)와 -가 2번나오기 때문이다.

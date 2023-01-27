@@ -1,12 +1,16 @@
 <div class="d-flex mb-1">
     <div class="mr-3">
         <!-- friend_user는 include 사용중인 timeline_sidebar.html에서 with로 기존 user 값의 이름을 전환해준거다. -->
-        <img src="{{ friend_user.avatar_url }}" style="width: 32px; height: 32px;" class="rounded-circle">
+        {% comment %} <img src="{{ friend_user.avatar_url }}" style="width: 32px; height: 32px;" class="rounded-circle"> {% endcomment %}
+        <!-- 하지만 인자값이 timeline_sidebar에서 가져오는 값이 변경되었기 때문에, 이것도 변경해준다. -->
+        <img src="{{ suggested_user.avatar_url }}" style="width: 32px; height: 32px;" class="rounded-circle">
     </div>
     <div>
-        {{ friend_user.username }}
+        <a href="{% url 'instagram:user_page' suggested_user.username %}">
+            {{ suggested_user.username }}
+        </a>
     </div>
     <div class="ml-auto">
-        <a href="#">Follow</a>
+        <a href="{% url 'accounts:user_follow' suggested_user.username %}">Follow</a>        
     </div>
 </div>

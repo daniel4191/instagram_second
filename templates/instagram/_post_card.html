@@ -1,0 +1,105 @@
+<!-- 이거는 tamplate_tags를 로드해오는 건데 특이하게도 ''를 써주지 말아야한다. -->
+{% load bootstrap4 instagram_tags humanize %}
+
+<div class="card">
+    <div class="card-header">
+        <img src="{{ post.author.avatar_url }}" style="width:28px; height: 28px;">
+        <a href="{% url 'instagram:user_page' post.author.username %}">
+            {{ post.author.username }}    
+        </a>        
+    </div>
+    <div class="card-body">
+        <!-- 포스팅한 사진을 전체 출력 -->
+        <img src="{{ post.photo.url }}" style="width: 100%;">
+
+        <!-- 좋아요 기능 시작 -->
+        {% comment %} {{ post.is_like_user }} {% endcomment %}
+        <div>
+            {% if post|is_like_user:user %}
+                <a href="{% url 'instagram:post_unlike' post.pk %}" style="color: inherit;">
+                    <i class="fa-solid fa-heart"></i>            
+                </a>
+            {% else %}
+                <a href="{% url 'instagram:post_like' post.pk %}">
+                    <i class="fa-regular fa-heart"></i>
+                </a>        
+            {% endif %}
+        </div>
+        <!-- 좋아요 기능 종료 -->
+
+        <!-- 댓글 노출 -->
+        <div id="post-{{ post.pk }}-comment-list" class="comment-list mt-3 mb-3">
+            {% for comment in post.comment_set.all %}
+                {% include 'instagram/_comment.html' %}
+            {% endfor %}
+        </div>
+
+        <!-- 태그 노출 기능 시작 -->    
+        <div class="comment-list">
+            {% for tag in post.tag_set.all %}
+                <span class="badge badge-success">
+                    #{{ tag.name }}
+                </span>                            
+            {% endfor %}      
+        </div>    
+        <!-- 태그 노출 기능 종료 -->
+        <div>
+            <!-- 추후에 이 a 태그만 body에서 가장 처음에 있는 사진 전체노출을 감싸는 걸로 해보자. -->
+            <a href="{{ post.get_absolute_url }}" style="" class="text-muted">
+                <!-- 생성 시각 표시를 좀 더 인간 친화적으로 표기 (n시간전 이런식으로) -->
+                <!-- template_tags를 load해올때 humanize도함께 해줘야한다. -->
+                <small>
+                    {{ post.created_at|naturaltime }}
+                </small>                
+            </a>
+        </div>
+        
+    </div>
+    <div class="card-footer">
+        <!-- if 문이 필요한 이유는 지금의 경우에는 form에 관한 데이터를 post_detail로는 보내고 있다.
+        현재 있는 파일의 위치는 _post_card이지만, post_detail에서 include로 사용중이기 때문에 가능한 일이다.
+        하지만 post_detail 외에는 form이 전송되는게 없으므로 form에 대한 노출이 있으면 에러가 발생한다.
+        그것을 피해주기 위한 if이다. -->
+        {% comment %} {% if comment_form %} {% endcomment %}
+
+        <!-- 하지만 디테일 페이지에만 작성 폼이 있는것은 아니기 때문에 차라리 메인 페이지에도 form을 views로 전달해준다. -->
+        {% comment %} <a href="{% url 'instagram:comment_new' post.pk %}">댓글 쓰기</a>  {% endcomment %}
+        <form id="post-{{ post.pk }}-comment-form" action="{% url 'instagram:comment_new' post.pk %}" method="POST">
+            {% csrf_token %}
+            {% bootstrap_form comment_form %}
+            <button class="btn btn-success btn-block" type="submit">댓글 쓰기</button>
+        </form>
+    {% comment %} {% endif %} {% endcomment %}
+
+        <div id="server-response-{{ post.pk }}"></div>
+
+        <script>
+            $(function() {
+                var form_id = "post-{{ post.pk }}-comment-form";
+                $("#" + form_id).submit(function(e) {
+                    e.preventDefault();
+
+                    var options = {
+                        target: '#server-response-{{ post.pk }}',
+                        success: function(responseText, statusText, xhr, $form) {
+                            console.group('ajaxSubmit response');                            
+                            console.log(responseText);
+                            console.log(statusText);
+                            console.log(xhr);
+                            console.log($form);
+                            console.groupEnd();
+
+                            $("#post-{{ post.pk }}-comment-list").prepend(responseText);
+                        }
+                    };
+
+                    // 이렇게 this를 써줘야 jquery로써 활용이 가능하다고 한다.
+                    $(this).ajaxSubmit(options); {
+
+                    });              
+                });
+                console.log('document ready');
+            });
+        </script>
+    </div>
+</div>

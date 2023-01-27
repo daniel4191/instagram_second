@@ -1,0 +1,9 @@
+<!-- 다른건 include로 물려있기만 해도 잘만 가져오더니만 naturaltime은 load를 개별적으로 해줘야지
+에러가 발생되지 않는다; -->
+{% load humanize %}
+
+<div class="comment">
+    <strong>{{ comment.author }}</strong>
+    {{ comment.message }}   
+    <small class="text-muted">{{ comment.created_at|naturaltime }}</small>
+</div>

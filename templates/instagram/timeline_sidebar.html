@@ -23,8 +23,14 @@
         Suggestions for you
     </div>
     <div class="card-body text-muted">
-        {% include 'instagram/timeline_sidebar_user_follow.html' with friend_user=user  %}
-        {% include 'instagram/timeline_sidebar_user_follow.html' with friend_user=user  %}
-        {% include 'instagram/timeline_sidebar_user_follow.html' with friend_user=user  %}
+        <!-- suggested_user_list는 views에서 받아온것 -->
+        {% for suggested_user in suggested_user_list %}
+            <!-- 기존에는 이렇게 처리해줬다. -->
+            {% comment %} {% include 'instagram/timeline_sidebar_user_follow.html' with friend_user=user  %} {% endcomment %}
+            {% include 'instagram/timeline_sidebar_user_follow.html' %}     
+        <!-- 만약 비어있다면 -->
+        {% empty %}
+            추천 친구가 없습니다.
+        {% endfor %}
     </div>
 </div>
